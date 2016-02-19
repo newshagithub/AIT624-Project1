@@ -14,7 +14,7 @@ public class FLOAD {
 		double BUI = 0, GRASS, TIMBER;
 	// calculates Buildup Index
 		// tests to see if there is Snow
-				if (ISNOW == 0) {
+				if (ISNOW == 1) {
 					GRASS = 0;
 					TIMBER = 0;
 		// if the preceding 24-hour Precipitation > 0
@@ -31,29 +31,29 @@ public class FLOAD {
 		return BUI;
 	}
 	// calculates Fine Fuel Moisture	
-		public static double CalFFM(double DRY, double WET){
-			double FFM = 99;
-			double Ai [] = {30.0,19.2,13.8,22.5};
-			double Bi [] = {-0.185900,-0.859000, -0.059660,-0.077373};
-			double Ci [] = {4.5, 12.5, 27.5};	
-				double DIF = DRY - WET;
-				for (int i=0; i<3; i++)
-				if ((FFM - Ci [i]) <= 0) {
-					FFM = Ai[i]*Math.exp(Bi[i])*DIF;
-				}
-				else {
+	public static double CalFFM(double DRY, double WET){
+		double FFM = 99;
+		double Ai [] = {30.0,19.2,13.8,22.5};
+		double Bi [] = {-0.185900,-0.859000, -0.059660,-0.077373};
+		double Ci [] = {4.5, 12.5, 27.5};	
+			double DIF = DRY - WET;
+			for (int i=0; i<3; i++)
+			if ((FFM - Ci [i]) <= 0) {
+				FFM = Ai[i]*Math.exp(Bi[i])*DIF;
+				
+			}else {
 					i = 4;
 					FFM = Ai[i]*Math.exp(Bi[i])*DIF;
 				}	
 				return FFM;
 		}
-		// calculates Drying Factor for the day		
-		public static double CalDF(double IHERB){
-			double DF,FFM;
-			DF = 0;
-			FFM = 99;
-			double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0};
-		// loop to 
+	// calculates Drying Factor for the day		
+	public static double CalDF(double IHERB){
+		double DF,FFM;
+		DF = 0;
+		FFM = 99;
+		double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0};
+		// loop to? what is i?
 			for (int i=0; i<6; i++)
 			if (FFM - Di [i] <= 0) {
 				DF = 7;
@@ -68,28 +68,28 @@ public class FLOAD {
 			}
 			return DF;
 		}
-		
-		public static double CalADFM(double WIND){
+	// calculates Adjusted Fuel Moist	
+	public static double CalADFM(double WIND){
 		double FFM,ADFM,BUO;
 		FFM = 99;
 		ADFM = 99;
 		BUO = 0;
-		// calculates Adjusted Fuel Moist
 		ADFM = 0.9*FFM + 0.5 + 9.5 * Math.exp(-BUO/50); 
 		return ADFM;
 	}
-		public static double CalGRASS(double WIND){
+	
+	// calculates Fine Fuel Spread
+	public static double CalGRASS(double WIND){
 		double FFM,GRASS;
 		FFM = 99;
-		// calculates Fine Fuel Spread 
 		if (WIND < 14) {
-					GRASS = 0.01312 * (WIND + 6) * Math.pow((33 - FFM),1.65) - 3;
-					}else {
-					GRASS = 0.00918 * (WIND + 14.4) * Math.pow((33 - FFM),1.65) - 3;
-					}
+				GRASS = 0.01312 * (WIND + 6) * Math.pow((33 - FFM),1.65) - 3;
+				}else {
+				GRASS = 0.00918 * (WIND + 14.4) * Math.pow((33 - FFM),1.65) - 3;
+				}
 			return GRASS;
 		}
-		// calculates Timber Spread Index				
+	// calculates Timber Spread Index				
 		public static double CalTIMBER(double WIND, double BUO, double IHERB){
 		double ADFM,TIMBER;
 		ADFM = 99;
@@ -101,8 +101,8 @@ public class FLOAD {
 		return TIMBER;
 		}
 		
-		// calculates Fire Load Index (Man-Hour Base)
-		// calculates Fire Load Rating only if TIMBER & BUO are greater than 0
+	// calculates Fire Load Index (Man-Hour Base)
+	// calculates Fire Load Rating only if TIMBER & BUO are greater than 0
 		public static double CalFLOAD(double BUO){
 		double TIMBER,FLOAD;
 		FLOAD = 0;
@@ -117,9 +117,8 @@ public class FLOAD {
 			}
 							}
 
-		// main Program Here //
+	// main Program Here //
 	public static void main(String[] args) {
-		
 
 		Scanner input = new Scanner(System.in);
         System.out.print("Please enter the Dry Bulb Temp: ");
@@ -137,8 +136,6 @@ public class FLOAD {
         System.out.print("Please enter the past 24 hours precipitation in inches and hundredths : ");
         double PRECIP = input.nextDouble();
         
-
-// if the preceding 24-hour Precipitation > 0
 
         double FFM = CalFFM(DRY, WET);
         double ADFM = CalADFM(WIND);
