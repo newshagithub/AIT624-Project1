@@ -10,30 +10,14 @@ import java.lang.Math;
  */
 public class FLOAD{
 
-	//	For input, the program requires dry-bulb and wet- bulb readings, 
-	//a yes or no decision regarding snow on the ground, 
-	//the preceding 24-hour precipitation, the current windspeed, 
-	//yesterday's buildup index, and current herbaceous stage of vegetation. 
-	//These are the same variables required by the tabular method.
-	//IF (expression) negative,zero,positive
+	private static Scanner input;
 
-	/**
-	 * Check isnow.
-	 *
-	 * @param ISNOW the isnow
-	 * @return the int
-	 */
-	// checks ISNOW
-	public static int CheckISNOW(int ISNOW){
-		double GRASS, TIMBER, FLOAD;	
-		// tests to see if there is Snow
-				if (ISNOW == 1) {
-					GRASS = 0;
-					TIMBER = 0;
-					FLOAD = 0;
-				}
-	return ISNOW;
-	}
+	//	For input, the program requires dry-bulb and wet- bulb readings, 
+	//	a yes or no decision regarding snow on the ground, 
+	//	the preceding 24-hour precipitation, the current windspeed, 
+	//	yesterday's buildup index, and current herbaceous stage of vegetation. 
+	//	These are the same variables required by the tabular method.
+	//	IF (expression) negative,zero,positive
 	
 	/**
 	 * Cal bui.
@@ -137,11 +121,11 @@ public class FLOAD{
 		double FFM,GRASS;
 		FFM = 99;
 		if (WIND < 14) {
-					GRASS = 0.01312 * (WIND + 6) * Math.pow((33 - FFM),1.65) - 3;
-					}else {
-					GRASS = 0.00918 * (WIND + 14.4) * Math.pow((33 - FFM),1.65) - 3;
+			GRASS = 0.01312 * (WIND + 6) * Math.pow((33 - FFM),1.65) - 3;
+		}else {
+			GRASS = 0.00918 * (WIND + 14.4) * Math.pow((33 - FFM),1.65) - 3;
 					}
-			return GRASS;
+		return GRASS;
 		}
 		
 	/**
@@ -161,8 +145,8 @@ public class FLOAD{
 		}else {
 			TIMBER = 0.00918 * (WIND + 14.4) * Math.pow((33 - ADFM),1.65) - 3;
 		}
-		return TIMBER;
-		}
+	return TIMBER;
+	}
 		
 	// calculates Fire Load Index (Man-Hour Base)
 	/**
@@ -194,7 +178,7 @@ public class FLOAD{
 	// main Program Here //
 	public static void main(String[] args) {
 		
-		Scanner input = new Scanner(System.in);
+		input = new Scanner(System.in);
         System.out.print("Please enter the Dry Bulb Temp: ");
         double DRY = input.nextDouble();
         System.out.print("Please enter the Wet Bulb Temp: ");
@@ -210,20 +194,39 @@ public class FLOAD{
         System.out.print("Please enter the past 24 hours precipitation in inches and hundredths : ");
         double PRECIP = input.nextDouble();                
 
-        double FFM = CalFFM(DRY, WET);
-        double ADFM = CalADFM(WIND);
-        double GRASS = CalGRASS(WIND);
-        double TIMBER = CalTIMBER(WIND, BUO, IHERB);
-        double FLOAD = CalFLOAD(BUO);
-        double BUI = CalBUI(PRECIP, IHERB, BUO, ISNOW);
-               
-        System.out.printf("Fine Fuel Moisture is: %s\n", FFM);
-        System.out.printf("Adjusted Fuel Moisture is: %s\n", ADFM);
-        System.out.printf("Grass Spread Index is: %s\n", GRASS);
-        System.out.printf("Timber Spread Index is: %s\n", TIMBER);
-        System.out.printf("Fire Load Raiting is: %s\n", FLOAD);
-        System.out.printf("Build Up Index is: %s\n", BUI);
-				
+        /**
+    	 * Check isnow.
+    	 *
+    	 * @param ISNOW the isnow
+    	 * @return the int
+    	 */
+    	// checks ISNOW
+        // tests to see if there is Snow
+    		if (ISNOW == 1) {
+    		double GRASS = 0;
+    		double TIMBER = 0;
+ 			double FLOAD = 0;
+ 			double BUI = CalBUI(PRECIP, BUO);
+   			System.out.printf("Grass Spread Index is: %s\n", GRASS);
+   	        System.out.printf("Timber Spread Index is: %s\n", TIMBER);
+   	        System.out.printf("Fire Load Raiting is: %s\n", FLOAD);
+   	        System.out.printf("Build Up Index is: %s\n", BUI);
+        }else {
+        	double FFM = CalFFM(DRY, WET);
+            double ADFM = CalADFM(WIND);
+            double GRASS = CalGRASS(WIND);
+            double TIMBER = CalTIMBER(WIND, BUO, IHERB);
+            double FLOAD = CalFLOAD(BUO);
+            double BUI = CalBUI(PRECIP, BUO);
+            
+            System.out.printf("Fine Fuel Moisture is: %s\n", FFM);
+            System.out.printf("Adjusted Fuel Moisture is: %s\n", ADFM);
+            System.out.printf("Grass Spread Index is: %s\n", GRASS);
+            System.out.printf("Timber Spread Index is: %s\n", TIMBER);
+            System.out.printf("Fire Load Raiting is: %s\n", FLOAD);
+            System.out.printf("Build Up Index is: %s\n", BUI);
+        }
+  	
 	}
 }
 
