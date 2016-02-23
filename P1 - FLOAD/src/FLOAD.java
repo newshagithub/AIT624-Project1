@@ -80,7 +80,7 @@ public class FLOAD{
 		double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0};
 		// loop to 
 			for (int i=0; i<6; i++)
-			if (FFM - Di [i] <= 0) {
+			if (DIF - Di [i] <= 0) {
 				DF = 7;
 			}else {
 				DF = i - 1; // test to see if the Fine Moisture is 1 or less
@@ -89,8 +89,8 @@ public class FLOAD{
 				FFM = 1;
 				}	
 			else {
-				FFM = FFM + (IHERB - 1) * 5;
-			}
+				FFM = FFM + (IHERB - 1) * 5; // Herb stage  ('1' for Cured, '2' for Transition, '3' for Green) 
+			}				//is used to adjust the calculated FFM by adding 5% for Transition or 10% for Green.
 			return DF;
 		}
 	
@@ -187,7 +187,7 @@ public class FLOAD{
         double WIND = input.nextDouble();
         System.out.print("Please enter the Last Value of teh Buildup Index : ");
         double BUO = input.nextDouble();
-        System.out.print("Please enter the Current Herp State of District:  : ");
+        System.out.print("Please enter the Current Herp State of District ('1' for Cured, '2' for Transition, '3' for Green): ");
         double IHERB = input.nextDouble();
         System.out.print("Please enter 0 for 'NO' snow and 1 for snow on the ground: ");
         int ISNOW = input.nextInt();
