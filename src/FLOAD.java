@@ -1,29 +1,28 @@
-	
-// For input, the program requires: 
-	// DRY(dry-bulb reading),
-	// WET(wet-bulb) readings, 
-	// a yes or no decision regarding ISNOW (snow on the ground), 
-	// PRECIP (preceding 24-hour precipitation), 
-	// WIND (current windspeed), 
-	// BUO (yesterday's buildup index), and 
-	// IHERB (current herbaceous stage of vegetation). 
+
 
 import java.util.Scanner;
 import java.lang.Math;
 // TODO: Auto-generated Javadoc
 
 /**
- * The Class FLOAD to calculate the Fire Load.
+ * The Class FLOAD to calculate the Fire Load. 
+ * For input, the program requires: 
+ * DRY(dry-bulb reading),
+ * WET(wet-bulb reading), 
+ * a yes or no decision regarding ISNOW (snow on the ground), 
+ * PRECIP (preceding 24-hour precipitation), 
+ * WIND (current windspeed), 
+ * BUO (yesterday's buildup index), and 
+ * IHERB (current herbaceous stage of vegetation). 
  */
 public class FLOAD{
 
 	private static Scanner input;
 	
 	/**
-	 * Cal bui.
-	 *
-	 * @param BUO the buo
-	 * @param PRECIP the precip
+	 * Calculates the BUI: Current Buildup Index
+	 * @param BUO the yesterday's buildup index
+	 * @param PRECIP the preceding 24-hour precipitation
 	 * @return the double
 	 */
 	// calculates Current Buildup Index
@@ -43,13 +42,11 @@ public class FLOAD{
 	}
 					
 	/**
-	 * Cal ffm.
-	 *
-	 * @param DRY the dry
-	 * @param WET the wet
+	 * Calculates FFM: Fine Fuel Moisture ( NO SNOW)
+	 * @param DRY the dry-bulb reading
+	 * @param WET the wet-bulb reading
 	 * @return the double
 	 */
-	// calculates Fine Fuel Moisture ( NO SNOW)	
 	public static double CalFFM(double DRY, double WET){
 		double FFM = 99;
 		double Ai [] = {30.0,19.2,13.8,22.5};
@@ -60,46 +57,43 @@ public class FLOAD{
 				if ((DIF - Ci [i]) <= 0) {
 					FFM = Ai[i]*Math.exp(Bi[i])*DIF;
 				}else {
-					i = 4;
+					i = 3;
 					FFM = Ai[i]*Math.exp(Bi[i])*DIF;
 				}	
 				return FFM;
 		}
 	
 	/**
-	 * Cal df.
-	 *
-	 * @param IHERB the iherb
+	 * Calculates DF (Drying Factor for the day).
+	 * @param IHERB the current herbaceous stage of vegetation
 	 * @return the double
 	 */
-	// calculates Drying Factor for the day ( NO SNOW)		
 	public static double CalDF(double IHERB){
 		double DF,FFM;
 		DF = 1;
 		FFM = 99;
 		double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0};
-		// loop to 
 			for (int i=0; i<6; i++)
 				if (FFM - Di [i] <= 0) {
 					DF = 7;
 				}else {
-					DF = i - 1; // test to see if the Fine Moisture is 1 or less
+					// test to see if the Fine Moisture is 1 or less
+					DF = i - 1; 
 				}
 				if (FFM < 1) {
 				FFM = 1;
 				}	
 				else {
-				// Herb stage  ('1' for Cured, '2' for Transition, '3' for Green) 
-				// is used to adjust the calculated FFM by adding 5% for Transition or 10% for Green.
-				FFM = FFM + (IHERB - 1) * 5; 
+					// Herb stage  ('1' for Cured, '2' for Transition, '3' for Green) 
+					// is used to adjust the calculated FFM by adding 5% for Transition or 10% for Green.
+					FFM = FFM + (IHERB - 1) * 5; 
 				}
 			return DF;
 		}
 	
 	/**
-	 * Cal adfm.
-	 *
-	 * @param WIND the wind
+	 * Calculates ADFM: Adjusted Fuel Moist ( NO SNOW)
+	 * @param WIND the current windspeed
 	 * @return the double
 	 */
 	// calculates Adjusted Fuel Moist ( NO SNOW)
@@ -113,9 +107,8 @@ public class FLOAD{
 	}
 	
 	/**
-	 * Cal grass.
-	 *
-	 * @param WIND the wind
+	 * Calculates GRASS: Fine Fuel Spread
+	 * @param WIND the current windspeed
 	 * @return the double
 	 */
 	// calculates Fine Fuel Spread 
@@ -131,11 +124,11 @@ public class FLOAD{
 		}
 		
 	/**
-	 * Cal timber.
+	 * Calculates TIMBER: Timber Spread Index
 	 *
-	 * @param WIND the wind
-	 * @param BUO the buo
-	 * @param IHERB the iherb
+	 * @param WIND the current windspeed
+	 * @param BUO the yesterday's buildup index
+	 * @param IHERB the yesterday's buildup index
 	 * @return the double
 	 */
 	// calculates Timber Spread Index				
@@ -152,9 +145,8 @@ public class FLOAD{
 		
 	// calculates Fire Load Index (Man-Hour Base)
 	/**
-	 * Cal fload.
-	 *
-	 * @param BUO the buo
+	 * Calculates FLOAD: Fire Load Index (Man-Hour Base)
+	 * @param BUO the yesterday's buildup index
 	 * @return the double
 	 */
 	// calculates Fire Load Rating only if TIMBER & BUO are greater than 0
@@ -174,7 +166,6 @@ public class FLOAD{
 
 	/**
 	 * The main method.
-	 *
 	 * @param args the arguments
 	 */
 	// main Program Here //
@@ -197,7 +188,7 @@ public class FLOAD{
         double PRECIP = input.nextDouble();                
 
         /**
-    	 * Check isnow.
+    	 * Check to see if there is snow.
     	 *
     	 * @param ISNOW the isnow
     	 * @return the int
@@ -209,13 +200,16 @@ public class FLOAD{
     		double GRASS = 0;
     		double TIMBER = 0;
  			double FLOAD = 0;
- 			double BUI = CalBUI(PRECIP, BUO); //adjusts the BUI
+ 			//adjusts the BUI
+ 			double BUI = CalBUI(PRECIP, BUO); 
    			System.out.printf("Grass Spread Index is: %s\n", GRASS);
    	        System.out.printf("Timber Spread Index is: %s\n", TIMBER);
    	        System.out.printf("Fire Load Raiting is: %s\n", FLOAD);
    	        System.out.printf("Build Up Index is: %s\n", BUI);
     		
     		}else {
+    			
+    		System.out.printf("\n ===== R === E === S === U === L === T === S ===> \n");
     			
         	double FFM = CalFFM(DRY, WET);
             double ADFM = CalADFM(WIND);
@@ -224,12 +218,12 @@ public class FLOAD{
             double FLOAD = CalFLOAD(BUO);
             double BUI = CalBUI(PRECIP, BUO);
             
-            System.out.printf("Fine Fuel Moisture is: %s\n", FFM);
-            System.out.printf("Adjusted Fuel Moisture is: %s\n", ADFM);
-            System.out.printf("Grass Spread Index is: %s\n", GRASS);
-            System.out.printf("Timber Spread Index is: %s\n", TIMBER);
-            System.out.printf("Fire Load Rating is: %s\n", FLOAD);
-            System.out.printf("Build Up Index is: %s\n", BUI);
+            System.out.printf("Fine Fuel Moisture: %s\n", FFM);
+            System.out.printf("Adjusted Fuel Moisture: %s\n", ADFM);
+            System.out.printf("Grass Spread Index: %s\n", GRASS);
+            System.out.printf("Timber Spread Index: %s\n", TIMBER);
+            System.out.printf("Fire Load Rating: %s\n", FLOAD);
+            System.out.printf("Build Up Index: %s\n", BUI);
         }
   	
 	}
