@@ -21,8 +21,7 @@ public class FLOAD{
 	 * @param PRECIP the preceding 24-hour precipitation
 	 * @return the double
 	 */
-	// calculates Current Buildup Index
-	public static double CalBUI(double BUO, double PRECIP){
+	public static double calBuildupIndex(double BUO, double PRECIP){
 		double BUI = 0;
 		// if the preceding 24-hour Precipitation > 0.1 
 		// BUI must be adjusted by adding the DF(HOW?) after correction **
@@ -43,11 +42,11 @@ public class FLOAD{
 	 * @param WET the wet-bulb reading
 	 * @return the double
 	 */
-	public static double CalFFM(double DRY, double WET){
+	public static double calFineFuelMoisture(double DRY, double WET){
 		double FFM = 99;
-		double Ai [] = {30.0,19.2,13.8,22.5};
-		double Bi [] = {-0.185900,-0.859000, -0.059660,-0.077373};
-		double Ci [] = {4.5, 12.5, 27.5};	
+		double Ai [] = {30.0,19.2,13.8,22.5}; // table values
+		double Bi [] = {-0.185900,-0.859000, -0.059660,-0.077373}; // table values
+		double Ci [] = {4.5, 12.5, 27.5}; // range of (dry-wet)
 		double DIF = DRY - WET;
 			for (int i=0; i<2; i++)
 				if ((DIF - Ci [i]) <= 0) {
@@ -64,11 +63,11 @@ public class FLOAD{
 	 * @param IHERB the current herbaceous stage of vegetation
 	 * @return the double
 	 */
-	public static double CalDF(double IHERB){
+	public static double calDryingFactor(double IHERB){
 		double DF,FFM;
 		DF = 1;
 		FFM = 99;
-		double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0};
+		double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0}; // table values
 			for (int i=0; i<6; i++)
 				if (FFM - Di [i] > 0) {
 					DF = Di[i] - 1;
@@ -79,12 +78,10 @@ public class FLOAD{
 		}
 	
 	/**
-	 * Calculates ADFM: Adjusted Fuel Moist ( NO SNOW)
 	 * @param BUO the yesterday's buildup index
 	 * @return the double
 	 */
-	// calculates Adjusted Fuel Moist ( NO SNOW)
-	public static double CalADFM(double BUO){
+	public static double calAdjustedFuelMoist(double BUO){
 		double ADFM, FFM;
 		FFM = 99;
 		ADFM = 99;
@@ -97,8 +94,7 @@ public class FLOAD{
 	 * @param WIND the current windspeed
 	 * @return the double
 	 */
-	// calculates Fine Fuel Spread 
-	public static double CalGRASS(double WIND){
+	public static double calGrass(double WIND){
 		double FFM,GRASS;
 		FFM = 99;
 		if (WIND < 14) {
@@ -114,9 +110,8 @@ public class FLOAD{
 	 * @param WIND the current windspeed
 	 * @param ADFM the Adjusted Fuel Moist
 	 * @return the double
-	 */
-	// calculates Timber Spread Index				
-	public static double CalTIMBER(double WIND, double ADFM){
+	 */			
+	public static double calTimber(double WIND, double ADFM){
 		double TIMBER;
 		ADFM = 99;
 		if (WIND < 14) {
@@ -127,13 +122,13 @@ public class FLOAD{
 	return TIMBER;
 	}
 		
-	// calculates Fire Load Index (Man-Hour Base)
+	
 	/**
 	 * Calculates FLOAD: Fire Load Index (Man-Hour Base)
 	 * @return the double
 	 */
-	// calculates Fire Load Rating only if TIMBER & BUI are greater than 0
-	public static double CalFLOAD(){
+	// calculates FLOAD only if TIMBER & BUI are greater than 0
+	public static double calFload(){
 		double TIMBER,FLOAD, BUI;
 		FLOAD = 0;
 		TIMBER = 0;
@@ -152,7 +147,7 @@ public class FLOAD{
 	 * The main method.
 	 * @param args the arguments
 	 */
-	// main Program Here //
+	
 	public static void main(String[] args) {
 		
 		input = new Scanner(System.in);
@@ -172,28 +167,26 @@ public class FLOAD{
         double PRECIP = input.nextDouble();    
         
         /**
-    	 * Check to see if there is snow.
     	 * @return the int
     	 */
-    	// checks ISNOW
         // tests to see if there is Snow
     		if (ISNOW == 1) {		
     			double GRASS = 0;
     			double TIMBER = 0;
     			double FLOAD = 0;
     			//adjusts the BUI
-    			double BUI = CalBUI(PRECIP, BUO); 
+    			double BUI = calBuildupIndex(PRECIP, BUO); 
     			System.out.printf("Grass Spread Index is: %s\n", GRASS);
     			System.out.printf("Timber Spread Index is: %s\n", TIMBER);
     			System.out.printf("Fire Load Raiting is: %s\n", FLOAD);
     			System.out.printf("Build Up Index is: %s\n", BUI);
-    		
+    		// if there is no snow
     		}else {
     			
     			System.out.printf("\n===== R === E === S === U === L === T === S ===> \n");
     			   		
-    			double ffm = CalFFM(DRY, WET);
-    			double df = CalDF(IHERB);
+    			double ffm = calFineFuelMoisture(DRY, WET);
+    			double df = calDryingFactor(IHERB);
     			// To adjust the fine fuel it tests to see if the 
 				// Fine Moisture is 1 or less *line 10
     			if (ffm < 1) {
@@ -203,15 +196,15 @@ public class FLOAD{
     				// is used to adjust the calculated FFM by adding 5% for Transition or 10% for Green.
     				ffm = ffm + ((IHERB - 1) * 5);
     			}
-    			double bui = CalBUI(PRECIP, BUO);
+    			double bui = calBuildupIndex(PRECIP, BUO);
     			// adjusts bui
     				if (PRECIP > 0.1) {
     					bui = bui + df;
     			}
-    			double adfm = CalADFM(BUO);
-    			double grass = CalGRASS(WIND);
-    			double timber = CalTIMBER(WIND, BUO);
-    			double fload = CalFLOAD();
+    			double adfm = calAdjustedFuelMoist(BUO);
+    			double grass = calGrass(WIND);
+    			double timber = calTimber(WIND, BUO);
+    			double fload = calFload();
            
     			System.out.printf("Build Up Index: %s\n", bui);
     			System.out.printf("Fine Fuel Moisture: %s\n", ffm);	
