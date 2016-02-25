@@ -111,7 +111,6 @@ public class FLOAD{
 		
 	/**
 	 * Calculates TIMBER: Timber Spread Index
-	 *
 	 * @param WIND the current windspeed
 	 * @param ADFM the Adjusted Fuel Moist
 	 * @return the double
@@ -174,8 +173,6 @@ public class FLOAD{
         
         /**
     	 * Check to see if there is snow.
-    	 *
-    	 * @param ISNOW the isnow
     	 * @return the int
     	 */
     	// checks ISNOW
