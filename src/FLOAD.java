@@ -131,23 +131,22 @@ public class FLOAD{
 	// calculates Fire Load Index (Man-Hour Base)
 	/**
 	 * Calculates FLOAD: Fire Load Index (Man-Hour Base)
-	 * @param BUO the yesterday's buildup index
 	 * @return the double
 	 */
-	// calculates Fire Load Rating only if TIMBER & BUO are greater than 0
+	// calculates Fire Load Rating only if TIMBER & BUI are greater than 0
 	public static double CalFLOAD(){
-		double TIMBER,FLOAD, BUO;
+		double TIMBER,FLOAD, BUI;
 		FLOAD = 0;
 		TIMBER = 0;
-		BUO = 0;
-		FLOAD = 1.75 * Math.log10(TIMBER) + 0.32 * Math.log10(BUO) - 1.640;  
+		BUI = 0;
+		if (TIMBER > 0 && BUI > 0) {
+			FLOAD = 1.75 * Math.log10(TIMBER) + 0.32 * Math.log10(BUI) - 1.640;  
 			if (FLOAD < 0) {
 				FLOAD = 0;
-				return FLOAD;
 			}else {
-				FLOAD = Math.pow(10, FLOAD);
-				return FLOAD;
+				FLOAD = Math.pow(10, FLOAD);		
 			}
+		}return FLOAD;	
 	}
 
 	/**
