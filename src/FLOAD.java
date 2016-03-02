@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.lang.Math;
 
-// TODO: Auto-generated Javadoc
 
 /**
  * this is the re-engineering of a Fire Danger Legacy System
@@ -21,7 +20,7 @@ public class FLOAD{
 	 * @param PRECIP the preceding 24-hour precipitation
 	 * @return the double
 	 */
-	public static double calBuildupIndex(double BUO, double PRECIP){
+	private static double calBuildupIndex(double BUO, double PRECIP){
 		double BUI = 0;
 		// if the preceding 24-hour Precipitation > 0.1 
 		// BUI must be adjusted by adding the DF(HOW?) after correction **
@@ -35,6 +34,14 @@ public class FLOAD{
 					}
 		return BUI;
 	}
+	
+	private static final double Ai [] = {30.0,19.2,13.8,22.5}; // table values
+	
+	private static final double Bi [] = {-0.185900,-0.859000, -0.059660,-0.077373}; // table values
+	
+	private static final double Ci [] = {4.5, 12.5, 27.5}; // table value for range of (dry-wet)
+	
+	private static final double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0}; // table values
 					
 	/**
 	 * Calculates FFM: Fine Fuel Moisture ( NO SNOW)
@@ -42,11 +49,8 @@ public class FLOAD{
 	 * @param WET the wet-bulb reading
 	 * @return the double
 	 */
-	public static double calFineFuelMoisture(double DRY, double WET){
+	private static double calFineFuelMoisture(double DRY, double WET){
 		double FFM = 99;
-		double Ai [] = {30.0,19.2,13.8,22.5}; // table values
-		double Bi [] = {-0.185900,-0.859000, -0.059660,-0.077373}; // table values
-		double Ci [] = {4.5, 12.5, 27.5}; // range of (dry-wet)
 		double DIF = DRY - WET;
 			for (int i=0; i<2; i++)
 				if ((DIF - Ci [i]) <= 0) {
@@ -63,11 +67,10 @@ public class FLOAD{
 	 * @param IHERB the current herbaceous stage of vegetation
 	 * @return the double
 	 */
-	public static double calDryingFactor(double IHERB){
+	private static double calDryingFactor(double IHERB){
 		double DF,FFM;
 		DF = 1;
 		FFM = 99;
-		double Di [] = {16.00, 10.0, 7.0, 5.0, 4.0, 3.0}; // table values
 			for (int i=0; i<6; i++)
 				if (FFM - Di [i] > 0) {
 					DF = Di[i] - 1;
@@ -81,7 +84,7 @@ public class FLOAD{
 	 * @param BUO the yesterday's buildup index
 	 * @return the double
 	 */
-	public static double calAdjustedFuelMoist(double BUO){
+	private static double calAdjustedFuelMoist(double BUO){
 		double ADFM, FFM;
 		FFM = 99;
 		ADFM = 99;
@@ -94,7 +97,7 @@ public class FLOAD{
 	 * @param WIND the current windspeed
 	 * @return the double
 	 */
-	public static double calGrass(double WIND){
+	private static double calGrass(double WIND){
 		double FFM,GRASS;
 		FFM = 99;
 		if (WIND < 14) {
@@ -111,7 +114,7 @@ public class FLOAD{
 	 * @param ADFM the Adjusted Fuel Moist
 	 * @return the double
 	 */			
-	public static double calTimber(double WIND, double ADFM){
+	private static double calTimber(double WIND, double ADFM){
 		double TIMBER;
 		ADFM = 99;
 		if (WIND < 14) {
@@ -128,7 +131,7 @@ public class FLOAD{
 	 * @return the double
 	 */
 	// calculates FLOAD only if TIMBER & BUI are greater than 0
-	public static double calFload(){
+	private static double calFload(){
 		double TIMBER,FLOAD, BUI;
 		FLOAD = 0;
 		TIMBER = 0;
@@ -183,7 +186,7 @@ public class FLOAD{
     		// if there is no snow
     		}else {
     			
-    			System.out.printf("\n===== R === E === S === U === L === T === S ===> \n");
+    			System.out.printf("\n ------- RESULTS ------- \n");
     			   		
     			double ffm = calFineFuelMoisture(DRY, WET);
     			double df = calDryingFactor(IHERB);
