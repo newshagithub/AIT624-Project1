@@ -1,3 +1,4 @@
+package edu.towson.cis.ait642.amirhormozaki.project1;
 import java.util.Scanner;
 import java.lang.Math;
 
