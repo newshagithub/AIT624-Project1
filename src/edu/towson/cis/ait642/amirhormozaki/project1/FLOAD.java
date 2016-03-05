@@ -189,23 +189,9 @@ public class FLOAD{
     			
     			System.out.printf("\n ------- RESULTS ------- \n");
     			   		
-    			double ffm = calFineFuelMoisture(DRY, WET);
-    			double df = calDryingFactor(IHERB);
-    			// To adjust the fine fuel it tests to see if the 
-				// Fine Moisture is 1 or less *line 10
-    			if (ffm < 1) {
-    				ffm = 1;
-    			}else {
-    				// Herb stage  ('1' for Cured, '2' for Transition, '3' for Green) 
-    				// is used to adjust the calculated FFM by adding 5% for Transition or 10% for Green.
-    				ffm = ffm + ((IHERB - 1) * 5);
-    			}
-    			double bui = calBuildupIndex(PRECIP, BUO);
-    			// adjusts bui
-    				if (PRECIP > 0.1) {
-    					bui = bui + df;
-    			}
-    			double adfm = calAdjustedFuelMoist(BUO);
+    			double ffm = ffm(DRY, WET, IHERB);
+				double bui = bui(BUO, IHERB, PRECIP);
+				double adfm = calAdjustedFuelMoist(BUO);
     			double grass = calGrass(WIND);
     			double timber = calTimber(WIND, BUO);
     			double fload = calFload();
@@ -219,5 +205,24 @@ public class FLOAD{
     		}
   	
 		}
+
+	private static double bui(double BUO, double IHERB, double PRECIP) {
+		double df = calDryingFactor(IHERB);
+		double bui = calBuildupIndex(PRECIP, BUO);
+		if (PRECIP > 0.1) {
+			bui = bui + df;
+		}
+		return bui;
+	}
+
+	private static double ffm(double DRY, double WET, double IHERB) {
+		double ffm = calFineFuelMoisture(DRY, WET);
+		if (ffm < 1) {
+			ffm = 1;
+		} else {
+			ffm = ffm + ((IHERB - 1) * 5);
+		}
+		return ffm;
+	}
 }
 
